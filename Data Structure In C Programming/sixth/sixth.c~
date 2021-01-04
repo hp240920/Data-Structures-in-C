@@ -1,0 +1,78 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct bstNode{
+    int data;
+    struct bstNode *left;
+    struct bstNode *right;
+}bstNode;
+
+bstNode* insert(int data, bstNode* root)
+{
+    //printf("Hey");
+    if(root == NULL){
+        //printf("I am null\n");
+        bstNode *node = (bstNode *)malloc(sizeof(bstNode));
+        node->data = data;
+        node->left = NULL;
+        node->right = NULL;
+        return node;
+    }
+    if(data < root->data){
+        root->left = insert(data, root->left);
+    }else if(data > root->data){
+        root->right = insert(data, root->right);
+    }
+    return root;
+}
+
+void inorder(bstNode *root)
+{
+   if(root == NULL) return;
+   inorder(root->left);
+   printf("%d\t", root->data);
+   inorder(root->right);
+}
+
+void freeUp(bstNode *root)
+{
+    if(root != NULL){
+      freeUp(root->left);
+      freeUp(root->right);
+      free(root);
+    }
+}
+
+int main(int argc, char* argv[])
+{
+    FILE* textReader = fopen(argv[1], "r");
+    if(textReader == NULL){
+        printf("error");
+        return 0;
+    }
+    bstNode *root = NULL;
+    char c = '\0';
+    int num = 0;
+    while(fscanf(textReader, "%c\t%d\n", &c, &num) != EOF){
+        if(c == 'i'){
+            root = insert(num, root);
+        }
+    }
+    fclose(textReader);
+    /*
+    root = insert(50, root);
+    //printf("Hello\n");
+    root = insert(60, root);
+    root = insert(30, root);
+    root = insert(20, root);
+    root = insert(10, root);
+    root = insert(0, root);
+    root = insert(15, root);
+    root = insert(25, root);
+    */
+    inorder(root);
+    freeUp(root);
+    return 0;
+}
+
+
